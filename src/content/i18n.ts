@@ -1,25 +1,28 @@
 export type Lang = 'en' | 'ta'
 
+/** Prefix public-folder paths with Vite's base so they work under a GitHub Pages subpath. */
+const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`
+
 export const photos = {
   /** Wedding-day stage portrait — primary hero / ceremony moment */
-  hero: '/photos/couple-stage.jpg',
-  ceremony: '/photos/couple-stage.jpg',
-  seal: '/photos/couple-stage.jpg',
-  coupleGroom: '/photos/02-beach-lookback.jpg',
-  coupleBride: '/photos/11-purple-saree-portrait.jpg',
+  hero: asset('photos/couple-stage.jpg'),
+  ceremony: asset('photos/couple-stage.jpg'),
+  seal: asset('photos/couple-stage.jpg'),
+  coupleGroom: asset('photos/02-beach-lookback.jpg'),
+  coupleBride: asset('photos/11-purple-saree-portrait.jpg'),
   story: [
-    { src: '/photos/couple-stage.jpg', captionEn: 'On the mandapam, forever begins', captionTa: 'மண்டபத்தில் தொடங்கும் நித்தியம்' },
-    { src: '/photos/01-bw-dip.jpg', captionEn: 'Where the tide met forever', captionTa: 'அலைகள் சந்தித்த நித்தியம்' },
-    { src: '/photos/02-beach-lookback.jpg', captionEn: 'A glance that stayed', captionTa: 'நிலைத்த ஒரு பார்வை' },
-    { src: '/photos/03-into-waves.jpg', captionEn: 'Into the waves, hand in hand', captionTa: 'அலைகளுக்குள், கைகோர்த்து' },
-    { src: '/photos/04-hands-closeup.jpg', captionEn: 'Promises in quiet hands', captionTa: 'அமைதியான கைகளில் வாக்குறுதி' },
-    { src: '/photos/05-wave-splash.jpg', captionEn: 'Joy that splashes', captionTa: 'தெறிக்கும் மகிழ்ச்சி' },
-    { src: '/photos/06-running-beach.jpg', captionEn: 'Running toward forever', captionTa: 'நித்தியத்தை நோக்கி' },
-    { src: '/photos/07-bw-legs.jpg', captionEn: 'Steps in soft light', captionTa: 'மென் ஒளியில் அடிகள்' },
-    { src: '/photos/08-oonjal-veena.jpg', captionEn: 'Melody on the oonjal', captionTa: 'ஊஞ்சலில் இசை' },
-    { src: '/photos/09-oonjal-close.jpg', captionEn: 'Home in each other', captionTa: 'ஒருவருக்கொருவர் இல்லம்' },
-    { src: '/photos/10-veena-laugh.jpg', captionEn: 'Laughter between notes', captionTa: 'சுரங்களுக்கிடையே சிரிப்பு' },
-    { src: '/photos/11-purple-saree-portrait.jpg', captionEn: 'Grace in gold & silk', captionTa: 'பட்டும் பொன்னும் அழகு' },
+    { src: asset('photos/couple-stage.jpg'), captionEn: 'On the mandapam, forever begins', captionTa: 'மண்டபத்தில் தொடங்கும் நித்தியம்' },
+    { src: asset('photos/01-bw-dip.jpg'), captionEn: 'Where the tide met forever', captionTa: 'அலைகள் சந்தித்த நித்தியம்' },
+    { src: asset('photos/02-beach-lookback.jpg'), captionEn: 'A glance that stayed', captionTa: 'நிலைத்த ஒரு பார்வை' },
+    { src: asset('photos/03-into-waves.jpg'), captionEn: 'Into the waves, hand in hand', captionTa: 'அலைகளுக்குள், கைகோர்த்து' },
+    { src: asset('photos/04-hands-closeup.jpg'), captionEn: 'Promises in quiet hands', captionTa: 'அமைதியான கைகளில் வாக்குறுதி' },
+    { src: asset('photos/05-wave-splash.jpg'), captionEn: 'Joy that splashes', captionTa: 'தெறிக்கும் மகிழ்ச்சி' },
+    { src: asset('photos/06-running-beach.jpg'), captionEn: 'Running toward forever', captionTa: 'நித்தியத்தை நோக்கி' },
+    { src: asset('photos/07-bw-legs.jpg'), captionEn: 'Steps in soft light', captionTa: 'மென் ஒளியில் அடிகள்' },
+    { src: asset('photos/08-oonjal-veena.jpg'), captionEn: 'Melody on the oonjal', captionTa: 'ஊஞ்சலில் இசை' },
+    { src: asset('photos/09-oonjal-close.jpg'), captionEn: 'Home in each other', captionTa: 'ஒருவருக்கொருவர் இல்லம்' },
+    { src: asset('photos/10-veena-laugh.jpg'), captionEn: 'Laughter between notes', captionTa: 'சுரங்களுக்கிடையே சிரிப்பு' },
+    { src: asset('photos/11-purple-saree-portrait.jpg'), captionEn: 'Grace in gold & silk', captionTa: 'பட்டும் பொன்னும் அழகு' },
   ],
 } as const
 
