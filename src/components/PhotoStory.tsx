@@ -7,6 +7,7 @@ import {
 import { useRef } from 'react'
 import { photos } from '../content/i18n'
 import { useLanguage } from '../hooks/useLanguage'
+import { MobileGallery } from './MobileGallery'
 
 export function PhotoStory() {
   const { t, lang } = useLanguage()
@@ -14,7 +15,7 @@ export function PhotoStory() {
   const headerInView = useInView(headerRef, { once: true })
 
   return (
-    <section className="ocean-wash relative overflow-hidden py-20 text-ivory sm:py-28">
+    <section className="ocean-wash relative overflow-hidden py-14 text-ivory sm:py-28">
       <div
         className="pointer-events-none absolute inset-0 opacity-25"
         style={{
@@ -23,7 +24,7 @@ export function PhotoStory() {
         }}
       />
 
-      <div ref={headerRef} className="relative mx-auto mb-12 max-w-4xl px-6 text-center">
+      <div ref={headerRef} className="relative mx-auto mb-8 max-w-4xl sm:mb-12 px-6 text-center">
         <motion.h2
           className={`${lang === 'ta' ? 'font-tamil text-3xl font-semibold' : 'font-display text-5xl'}`}
           initial={{ opacity: 0, y: 16 }}
@@ -39,7 +40,13 @@ export function PhotoStory() {
         </div>
       </div>
 
-      <div className="relative mx-auto max-w-6xl space-y-16 px-4 sm:space-y-28 sm:px-6">
+      {/* Phones: compact tap-to-open grid (no long scroll) */}
+      <div className="sm:hidden">
+        <MobileGallery />
+      </div>
+
+      {/* Tablet / desktop: full parallax story */}
+      <div className="relative mx-auto hidden max-w-6xl space-y-28 px-6 sm:block">
         {photos.story.map((shot, i) => (
           <ParallaxShot
             key={shot.src}

@@ -56,10 +56,10 @@ export function Events() {
                   style={{
                     backgroundImage:
                       i === 1
-                        ? `url(${import.meta.env.BASE_URL}photos/05-wave-splash.jpg)`
+                        ? `url(${import.meta.env.BASE_URL}photos/web/05-wave-splash.jpg)`
                         : i === 2
-                          ? `url(${import.meta.env.BASE_URL}photos/couple-stage.jpg)`
-                          : `url(${import.meta.env.BASE_URL}photos/04-hands-closeup.jpg)`,
+                          ? `url(${import.meta.env.BASE_URL}photos/web/couple-stage.jpg)`
+                          : `url(${import.meta.env.BASE_URL}photos/web/04-hands-closeup.jpg)`,
                     backgroundSize: 'cover',
                     backgroundPosition: i === 2 ? 'center 20%' : 'center',
                     mixBlendMode: 'overlay',
