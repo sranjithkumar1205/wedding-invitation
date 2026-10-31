@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.env
+.env.*
+!.env.example
+scripts/capture-demos.mjs
+scripts/gui-walkthrough.mjs
+scripts/smoke-open.mjs
