@@ -193,6 +193,7 @@ function EventCoverflow({
   }
 
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    window.getSelection()?.removeAllRanges()
     coast.current?.stop()
     vel.current = 0
     lastMove.current = performance.now()
@@ -245,7 +246,7 @@ function EventCoverflow({
     return (
       <div className="grid gap-6 lg:grid-cols-3">
         {events.map((ev, i) => (
-          <article key={ev.id} className="relative min-h-[280px] overflow-hidden text-ivory">
+          <article key={ev.id} className="relative min-h-[280px] overflow-hidden text-ivory select-none">
             <EventFace index={i} lang={lang} note={note} {...copy[ev.id]} />
           </article>
         ))}
@@ -256,7 +257,8 @@ function EventCoverflow({
   return (
     <div
       className="relative cursor-grab select-none active:cursor-grabbing"
-      style={{ height: CARD_H + 36, perspective: 1400, touchAction: 'pan-y' }}
+      style={{ height: CARD_H + 36, perspective: 1400, touchAction: 'pan-y', WebkitUserSelect: 'none', userSelect: 'none' }}
+      onSelectStart={(event) => event.preventDefault()}
       role="group"
       aria-label="Celebrations"
       tabIndex={0}
@@ -324,7 +326,7 @@ function CoverCard({
 
   return (
     <motion.article
-      className="absolute top-1/2 left-1/2 overflow-hidden text-ivory shadow-[0_22px_50px_rgba(23,15,31,0.28)]"
+      className="absolute top-1/2 left-1/2 overflow-hidden text-ivory select-none shadow-[0_22px_50px_rgba(23,15,31,0.28)]"
       style={{
         width,
         height: CARD_H,
@@ -334,6 +336,9 @@ function CoverCard({
         opacity,
         zIndex,
         willChange: 'transform',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        WebkitTouchCallout: 'none',
       }}
       onClick={onSelect}
     >
@@ -363,7 +368,7 @@ function EventFace({
           mixBlendMode: 'overlay',
         }}
       />
-      <div className="relative flex h-full flex-col justify-end p-7">
+      <div className="relative flex h-full flex-col justify-end p-7 select-none">
         <p className="mb-2 text-[0.65rem] tracking-[0.28em] text-gold-bright/90 uppercase">
           {String(index + 1).padStart(2, '0')}
         </p>
