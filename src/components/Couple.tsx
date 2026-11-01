@@ -93,7 +93,7 @@ export function Couple() {
   const showSection = phase === 'reveal'
 
   return (
-    <section ref={ref} className="kolam-bg relative overflow-hidden">
+    <section ref={ref} className="kolam-bg relative">
       {showSection && (
         <motion.div
           className="mx-auto max-w-6xl px-6 py-20 sm:py-28"
@@ -182,14 +182,16 @@ export function Couple() {
         </motion.div>
       )}
 
+      {showStage && <div className="min-h-[100dvh]" aria-hidden />}
+
       <AnimatePresence>
         {showStage && (
           <motion.div
             key="stage"
             className={
-              showSection
-                ? 'pointer-events-none absolute inset-0 z-20'
-                : 'relative flex min-h-[100svh] items-center justify-center px-6'
+              inView
+                ? 'kolam-bg fixed inset-0 z-30 grid place-items-center overflow-hidden'
+                : 'absolute inset-0 grid place-items-center overflow-hidden'
             }
             exit={{ opacity: 0, transition: { duration: 0.7 } }}
           >
@@ -229,12 +231,12 @@ function HeartIntro({
   )
 
   return (
-    <div className="relative flex h-full min-h-[100svh] w-full items-center justify-center overflow-hidden">
+    <div className="relative grid h-full w-full place-items-center overflow-hidden">
       <AnimatePresence>
         {phase === 'heart' && (
           <motion.div
             key="heart"
-            className="absolute flex h-56 w-56 items-center justify-center sm:h-64 sm:w-64"
+            className="flex h-56 w-56 items-center justify-center sm:h-64 sm:w-64"
             initial={{ scale: 0.2, opacity: 0 }}
             animate={{ scale: [1, 1.06, 0.98, 1.08, 1], opacity: 1 }}
             exit={{
