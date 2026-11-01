@@ -8,8 +8,8 @@ export const photos = {
   hero: asset('photos/web/couple-stage.jpg'),
   ceremony: asset('photos/web/couple-stage.jpg'),
   seal: asset('photos/web/couple-stage.jpg'),
-  coupleGroom: asset('photos/ranjith.jpg'),
-  coupleBride: asset('photos/chandrika.jpeg'),
+  coupleGroom: asset('photos/web/02-beach-lookback.jpg'),
+  coupleBride: asset('photos/web/11-purple-saree-portrait.jpg'),
   story: [
     { src: asset('photos/web/couple-stage.jpg'), thumb: asset('photos/thumb/couple-stage.jpg'), card: asset('photos/med/couple-stage.jpg'), captionEn: 'On the mandapam, forever begins', captionTa: 'மண்டபத்தில் தொடங்கும் நித்தியம்' },
     { src: asset('photos/web/01-bw-dip.jpg'), thumb: asset('photos/thumb/01-bw-dip.jpg'), card: asset('photos/med/01-bw-dip.jpg'), captionEn: 'Where the tide met forever', captionTa: 'அலைகள் சந்தித்த நித்தியம்' },
