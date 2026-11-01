@@ -130,7 +130,7 @@ export function SphereGallery() {
   }, [])
 
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       <motion.div
         ref={stageRef}
         className="relative mx-auto w-full max-w-md cursor-grab overflow-hidden select-none active:cursor-grabbing"

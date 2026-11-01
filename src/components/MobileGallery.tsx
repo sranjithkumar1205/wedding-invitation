@@ -15,6 +15,16 @@ const N = shots.length
 const AUTOPLAY_MS = 3200
 const SWIPE_PX = 50
 
+type VisualFrame = { top: number; left: number; width: number; height: number }
+
+function readVisualFrame(): VisualFrame {
+  const view = window.visualViewport
+  if (!view) {
+    return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }
+  }
+  return { top: view.offsetTop, left: view.offsetLeft, width: view.width, height: view.height }
+}
+
 /** Shortest circular distance from the active index (negative = left of centre). */
 function offsetOf(i: number, active: number) {
   let d = (i - active + N) % N
@@ -237,11 +247,32 @@ export function FullScreenViewer({
     [index, onChange],
   )
 
+  const [frame, setFrame] = useState<VisualFrame>(() =>
+    typeof window === 'undefined'
+      ? { top: 0, left: 0, width: 360, height: 800 }
+      : readVisualFrame(),
+  )
+
   // Lock page scroll + keyboard controls while open.
   useEffect(() => {
     if (index === null) return
-    const prev = document.body.style.overflow
+    const root = document.documentElement
+    const prev = {
+      htmlOverflow: root.style.overflow,
+      bodyOverflow: document.body.style.overflow,
+      scrollLeft: window.scrollX,
+    }
+    root.style.overflow = 'hidden'
     document.body.style.overflow = 'hidden'
+    root.scrollLeft = 0
+    document.body.scrollLeft = 0
+    window.scrollTo(0, window.scrollY)
+    const place = () => setFrame(readVisualFrame())
+    place()
+    const view = window.visualViewport
+    view?.addEventListener('resize', place)
+    view?.addEventListener('scroll', place)
+    window.addEventListener('resize', place)
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
       if (e.key === 'ArrowRight') step(1)
@@ -249,7 +280,12 @@ export function FullScreenViewer({
     }
     window.addEventListener('keydown', onKey)
     return () => {
-      document.body.style.overflow = prev
+      root.style.overflow = prev.htmlOverflow
+      document.body.style.overflow = prev.bodyOverflow
+      window.scrollTo(prev.scrollLeft, window.scrollY)
+      view?.removeEventListener('resize', place)
+      view?.removeEventListener('scroll', place)
+      window.removeEventListener('resize', place)
       window.removeEventListener('keydown', onKey)
     }
   }, [index, onClose, step])
@@ -265,7 +301,7 @@ export function FullScreenViewer({
     <AnimatePresence>
       {shot && index !== null && (
         <motion.div
-          className="fixed inset-0 z-[100] flex flex-col bg-black"
+          className="fixed z-[100] flex flex-col overflow-hidden bg-black"
           role="dialog"
           aria-modal="true"
           initial={{ opacity: 0 }}
@@ -273,11 +309,16 @@ export function FullScreenViewer({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           style={{
+            top: frame.top,
+            left: frame.left,
+            width: frame.width,
+            height: frame.height,
+            maxWidth: '100%',
             paddingTop: 'env(safe-area-inset-top)',
             paddingBottom: 'env(safe-area-inset-bottom)',
           }}
         >
-          <div className="flex items-center justify-between pt-4 pr-20 pl-4 text-sm text-ivory/80">
+          <div className="flex shrink-0 items-center justify-between pt-4 pr-20 pl-4 text-sm text-ivory/80">
             <span className="tracking-[0.2em] tabular-nums">
               {String(index + 1).padStart(2, '0')} / {String(N).padStart(2, '0')}
             </span>
@@ -285,7 +326,7 @@ export function FullScreenViewer({
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="fixed z-[110] flex h-12 w-12 items-center justify-center rounded-full bg-black text-white shadow-[0_8px_24px_rgba(0,0,0,0.45)] ring-2 ring-white/80"
+              className="absolute z-[110] flex h-12 w-12 items-center justify-center rounded-full bg-black text-white shadow-[0_8px_24px_rgba(0,0,0,0.45)] ring-2 ring-white/80"
               style={{
                 top: 'max(0.75rem, env(safe-area-inset-top))',
                 right: 'max(0.75rem, env(safe-area-inset-right))',
@@ -300,7 +341,7 @@ export function FullScreenViewer({
 
           <motion.div
             key={index}
-            className="relative flex min-h-0 flex-1 items-center justify-center px-2"
+            className="relative min-h-0 w-full flex-1"
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.4}
@@ -313,7 +354,7 @@ export function FullScreenViewer({
               src={shot.src}
               alt={tamil ? shot.captionTa : shot.captionEn}
               draggable={false}
-              className="max-h-full max-w-full select-none object-contain"
+              className="absolute inset-0 h-full w-full select-none object-contain"
             />
           </motion.div>
 

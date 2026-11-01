@@ -30,7 +30,7 @@ function Invitation() {
         onToggleMusic={() => void music.toggle()}
       />
       <main
-        className={opened ? 'relative opacity-100' : 'pointer-events-none h-screen overflow-hidden opacity-0'}
+        className={opened ? 'relative w-full max-w-full overflow-x-clip opacity-100' : 'pointer-events-none h-screen overflow-hidden opacity-0'}
         aria-hidden={!opened}
       >
         {opened && (

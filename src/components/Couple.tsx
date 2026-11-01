@@ -93,7 +93,7 @@ export function Couple() {
   const showSection = phase === 'reveal'
 
   return (
-    <section ref={ref} className="kolam-bg relative">
+    <section ref={ref} className="kolam-bg relative overflow-x-clip">
       {showSection && (
         <motion.div
           className="mx-auto max-w-6xl px-6 py-20 sm:py-28"
@@ -133,7 +133,7 @@ export function Couple() {
             <ScrollWords text={`“${t.quote}”`} />
           </blockquote>
 
-          <div className="grid items-stretch gap-10 md:grid-cols-[1fr_auto_1fr] md:gap-6">
+          <div className="grid min-w-0 items-stretch gap-10 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-6">
             <Person
               delay={0.7}
               image={photos.coupleGroom}
@@ -350,7 +350,7 @@ function Person({
 }) {
   return (
     <motion.article
-      className={`flex flex-col ${align === 'right' ? 'md:items-end md:text-right' : 'md:items-start md:text-left'} items-center text-center`}
+      className={`flex w-full min-w-0 flex-col ${align === 'right' ? 'md:items-end md:text-right' : 'md:items-start md:text-left'} items-center text-center`}
       initial={{ opacity: 0, y: 50, scale: 0.72, filter: 'blur(10px)' }}
       animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
       transition={{ delay, duration: 1.35, type: 'spring', stiffness: 80, damping: 18 }}
@@ -371,8 +371,10 @@ function Person({
         {title}
       </p>
       <h3
-        className={`mt-1 text-maroon ${
-          lang === 'ta' ? 'font-tamil text-2xl font-semibold' : 'font-display text-4xl sm:text-5xl'
+        className={`mt-1 w-full max-w-full text-balance text-maroon ${
+          lang === 'ta'
+            ? 'font-tamil text-2xl font-semibold'
+            : 'font-display text-[clamp(2rem,8.4vw,2.75rem)] leading-none sm:text-5xl'
         }`}
       >
         {name}

@@ -100,7 +100,7 @@ export function Events({ onEnter }: { onEnter?: () => void }) {
   } as const
 
   return (
-    <section ref={setSection} className="relative bg-ivory-warm py-20 sm:py-28">
+    <section ref={setSection} className="relative overflow-x-clip bg-ivory-warm py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-14 text-center">
           <motion.h2
@@ -174,7 +174,10 @@ function EventCoverflow({
   const [width, setWidth] = useState(260)
 
   useEffect(() => {
-    const measure = () => setWidth(Math.round(Math.min(280, Math.max(220, window.innerWidth * 0.62))))
+    const measure = () => {
+      const view = window.visualViewport?.width ?? document.documentElement.clientWidth
+      setWidth(Math.round(Math.min(280, Math.max(220, view * 0.62))))
+    }
     measure()
     window.addEventListener('resize', measure)
     return () => window.removeEventListener('resize', measure)
@@ -256,7 +259,7 @@ function EventCoverflow({
 
   return (
     <div
-      className="relative cursor-grab select-none active:cursor-grabbing"
+      className="relative cursor-grab overflow-hidden select-none active:cursor-grabbing"
       style={{ height: CARD_H + 36, perspective: 1400, touchAction: 'pan-y', WebkitUserSelect: 'none', userSelect: 'none' }}
       role="group"
       aria-label="Celebrations"

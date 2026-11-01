@@ -31,7 +31,7 @@ export function PhotoStory() {
 
       <div ref={headerRef} className="relative mx-auto mb-8 max-w-4xl sm:mb-12 px-6 text-center">
         <motion.h2
-          className={`${lang === 'ta' ? 'font-tamil text-3xl font-semibold' : 'font-display text-5xl'}`}
+          className={`mx-auto max-w-full text-balance ${lang === 'ta' ? 'font-tamil text-3xl font-semibold' : 'font-display text-[clamp(2.4rem,11vw,3rem)] leading-none'}`}
           initial={{ opacity: 0, y: 16 }}
           animate={headerInView ? { opacity: 1, y: 0 } : {}}
         >
