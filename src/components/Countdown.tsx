@@ -17,7 +17,7 @@ export function Countdown() {
   const target = useMemo(() => new Date(muhurthamISO).getTime(), [])
   const [parts, setParts] = useState(() => getRemaining(target))
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const inView = useInView(ref, { once: true, amount: 0.35 })
 
   useEffect(() => {
     const id = window.setInterval(() => setParts(getRemaining(target)), 1000)
@@ -46,6 +46,7 @@ export function Countdown() {
           className={`mb-3 text-gold-bright ${lang === 'ta' ? 'font-tamil text-base' : 'font-display text-3xl'}`}
           initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
         >
           {t.countdownTitle}
         </motion.p>
@@ -65,7 +66,7 @@ export function Countdown() {
                 className="relative overflow-hidden rounded-sm border border-gold/25 bg-maroon-deep/40 px-3 py-6 backdrop-blur-sm"
                 initial={{ opacity: 0, y: 24 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.1 * i, duration: 0.55 }}
+                transition={{ delay: 0.18 + 0.12 * i, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               >
                 {/* Rolling digits: the old number slides up and out, the new one rolls in */}
                 <span className="relative block h-[1.25em] overflow-hidden font-serif text-4xl leading-[1.25] font-semibold tabular-nums text-gold-bright sm:text-5xl">
