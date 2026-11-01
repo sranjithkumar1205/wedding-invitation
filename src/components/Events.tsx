@@ -20,7 +20,7 @@ const accents = [
 
 const cardPhotos = [
   'photos/web/04-hands-closeup.jpg',
-  'photos/web/05-wave-splash.jpg',
+  'photos/web/14-window-gold.jpg',
   'photos/web/couple-stage.jpg',
 ]
 
@@ -358,18 +358,23 @@ function EventFace({
   time,
   note,
 }: EventCopy & { index: number; lang: string; note: string }) {
+  const photo = `${import.meta.env.BASE_URL}${cardPhotos[index]}`
+  const position = index === 2 ? 'center 20%' : index === 1 ? 'center 32%' : 'center'
   return (
     <>
       <div className={`absolute inset-0 bg-gradient-to-br ${accents[index]}`} />
       <div
-        className="absolute inset-0 opacity-30"
+        className={`absolute inset-0 ${index === 1 ? 'opacity-80' : 'opacity-30'}`}
         style={{
-          backgroundImage: `url(${import.meta.env.BASE_URL}${cardPhotos[index]})`,
+          backgroundImage: `url(${photo})`,
           backgroundSize: 'cover',
-          backgroundPosition: index === 2 ? 'center 20%' : 'center',
-          mixBlendMode: 'overlay',
+          backgroundPosition: position,
+          mixBlendMode: index === 1 ? 'normal' : 'overlay',
         }}
       />
+      {index === 1 && (
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0c2832]/92 via-[#0c2832]/45 to-[#0c2832]/15" />
+      )}
       <div className="relative flex h-full flex-col justify-end p-7 select-none">
         <p className="mb-2 text-[0.65rem] tracking-[0.28em] text-gold-bright/90 uppercase">
           {String(index + 1).padStart(2, '0')}
