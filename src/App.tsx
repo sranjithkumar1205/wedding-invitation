@@ -41,8 +41,8 @@ function Invitation() {
             <Hero />
             <Countdown />
             <Couple />
-            <Events />
             <PhotoStory />
+            <Events />
             <Venue />
             <Footer />
           </>
