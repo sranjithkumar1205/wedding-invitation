@@ -1,88 +1,40 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+const TRACK = `${import.meta.env.BASE_URL}${encodeURI(
+  'Cinematic Trendy Wedding Invitation Video Premium Save the date Dude wedding.mp3.mpeg',
+)}`
+
 /**
- * Soft procedural ambient pad (Web Audio) — no external audio file / royalty concerns.
- * Mute UI always works; sound starts only after a user gesture (open seal / unmute).
+ * Wedding track. Playback starts on the seal tap (a user gesture) and the mute control pauses it.
  */
 export function useAmbientMusic() {
   const [muted, setMuted] = useState(true)
-  const [ready, setReady] = useState(false)
-  const ctxRef = useRef<AudioContext | null>(null)
-  const nodesRef = useRef<{
-    master: GainNode
-    oscs: OscillatorNode[]
-    gains: GainNode[]
-  } | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
-  const ensureGraph = useCallback(async () => {
-    if (nodesRef.current && ctxRef.current) {
-      if (ctxRef.current.state === 'suspended') await ctxRef.current.resume()
-      return
-    }
-
-    const AudioCtx =
-      window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext })
-        .webkitAudioContext
-    const ctx = new AudioCtx()
-    ctxRef.current = ctx
-
-    const master = ctx.createGain()
-    master.gain.value = 0
-    master.connect(ctx.destination)
-
-    const freqs = [110, 164.81, 220, 329.63]
-    const oscs: OscillatorNode[] = []
-    const gains: GainNode[] = []
-
-    freqs.forEach((freq, i) => {
-      const osc = ctx.createOscillator()
-      osc.type = i % 2 === 0 ? 'sine' : 'triangle'
-      osc.frequency.value = freq
-
-      const g = ctx.createGain()
-      g.gain.value = 0.04 - i * 0.006
-
-      const lfo = ctx.createOscillator()
-      lfo.type = 'sine'
-      lfo.frequency.value = 0.05 + i * 0.02
-      const lfoGain = ctx.createGain()
-      lfoGain.gain.value = 0.012
-      lfo.connect(lfoGain)
-      lfoGain.connect(g.gain)
-      lfo.start()
-
-      osc.connect(g)
-      g.connect(master)
-      osc.start()
-      oscs.push(osc)
-      gains.push(g)
-    })
-
-    nodesRef.current = { master, oscs, gains }
-    setReady(true)
-  }, [])
-
-  const fadeTo = useCallback((target: number, seconds = 1.2) => {
-    const ctx = ctxRef.current
-    const master = nodesRef.current?.master
-    if (!ctx || !master) return
-    const now = ctx.currentTime
-    master.gain.cancelScheduledValues(now)
-    master.gain.setValueAtTime(master.gain.value, now)
-    master.gain.linearRampToValueAtTime(target, now + seconds)
+  const ensureAudio = useCallback(() => {
+    if (audioRef.current) return audioRef.current
+    const audio = new Audio(TRACK)
+    audio.loop = true
+    audio.preload = 'auto'
+    audio.volume = 0.9
+    audioRef.current = audio
+    return audio
   }, [])
 
   const unmute = useCallback(async () => {
-    await ensureGraph()
-    fadeTo(0.22)
+    const audio = ensureAudio()
     setMuted(false)
-  }, [ensureGraph, fadeTo])
+    try {
+      await audio.play()
+    } catch {
+      setMuted(true)
+    }
+  }, [ensureAudio])
 
   const mute = useCallback(() => {
-    fadeTo(0, 0.6)
+    audioRef.current?.pause()
     setMuted(true)
-  }, [fadeTo])
+  }, [])
 
   const toggle = useCallback(async () => {
     if (muted) await unmute()
@@ -91,16 +43,12 @@ export function useAmbientMusic() {
 
   useEffect(() => {
     return () => {
-      nodesRef.current?.oscs.forEach((o) => {
-        try {
-          o.stop()
-        } catch {
-          /* already stopped */
-        }
-      })
-      void ctxRef.current?.close()
+      const audio = audioRef.current
+      if (!audio) return
+      audio.pause()
+      audio.src = ''
     }
   }, [])
 
-  return { muted, ready, toggle, unmute, mute }
+  return { muted, ready: true, toggle, unmute, mute }
 }

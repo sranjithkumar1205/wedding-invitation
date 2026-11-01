@@ -8,8 +8,8 @@ export const photos = {
   hero: asset('photos/web/couple-stage.jpg'),
   ceremony: asset('photos/web/couple-stage.jpg'),
   seal: asset('photos/web/couple-stage.jpg'),
-  coupleGroom: asset('photos/web/02-beach-lookback.jpg'),
-  coupleBride: asset('photos/web/11-purple-saree-portrait.jpg'),
+  coupleGroom: asset('photos/ranjith.jpg'),
+  coupleBride: asset('photos/chandrika.jpeg'),
   story: [
     { src: asset('photos/web/couple-stage.jpg'), thumb: asset('photos/thumb/couple-stage.jpg'), card: asset('photos/med/couple-stage.jpg'), captionEn: 'On the mandapam, forever begins', captionTa: 'மண்டபத்தில் தொடங்கும் நித்தியம்' },
     { src: asset('photos/web/01-bw-dip.jpg'), thumb: asset('photos/thumb/01-bw-dip.jpg'), card: asset('photos/med/01-bw-dip.jpg'), captionEn: 'Where the tide met forever', captionTa: 'அலைகள் சந்தித்த நித்தியம்' },
@@ -22,7 +22,7 @@ export const photos = {
     { src: asset('photos/web/08-oonjal-veena.jpg'), thumb: asset('photos/thumb/08-oonjal-veena.jpg'), card: asset('photos/med/08-oonjal-veena.jpg'), captionEn: 'Melody on the oonjal', captionTa: 'ஊஞ்சலில் இசை' },
     { src: asset('photos/web/09-oonjal-close.jpg'), thumb: asset('photos/thumb/09-oonjal-close.jpg'), card: asset('photos/med/09-oonjal-close.jpg'), captionEn: 'Home in each other', captionTa: 'ஒருவருக்கொருவர் இல்லம்' },
     { src: asset('photos/web/10-veena-laugh.jpg'), thumb: asset('photos/thumb/10-veena-laugh.jpg'), card: asset('photos/med/10-veena-laugh.jpg'), captionEn: 'Laughter between notes', captionTa: 'சுரங்களுக்கிடையே சிரிப்பு' },
-    { src: asset('photos/web/11-purple-saree-portrait.jpg'), thumb: asset('photos/thumb/11-purple-saree-portrait.jpg'), card: asset('photos/med/11-purple-saree-portrait.jpg'), captionEn: 'Grace in gold & silk', captionTa: 'பட்டும் பொன்னும் அழகு' },
+    { src: asset('photos/chandrika.jpeg'), thumb: asset('photos/chandrika.jpeg'), card: asset('photos/chandrika.jpeg'), captionEn: 'Grace in gold & silk', captionTa: 'பட்டும் பொன்னும் அழகு' },
   ],
 } as const
 
