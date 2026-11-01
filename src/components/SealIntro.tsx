@@ -140,17 +140,6 @@ export function SealIntro({ open, onOpen }: Props) {
             >
               {t.tapToOpen}
             </motion.p>
-
-            <motion.button
-              type="button"
-              onClick={onOpen}
-              className="mt-8 border border-gold/45 px-8 py-3 text-xs tracking-[0.28em] uppercase text-gold-bright transition hover:bg-gold/15"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.85 }}
-            >
-              {t.openSeal}
-            </motion.button>
           </div>
         </motion.div>
       )}

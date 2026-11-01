@@ -132,16 +132,23 @@ const DEPTH = 0.5
 const CENTER = 0.8
 const CARD_H = 380
 
+function smoothstep(t: number) {
+  const c = Math.min(1, Math.max(0, t))
+  return c * c * (3 - 2 * c)
+}
+
 /** Flat card in front, neighbours turned 55° and set back — the coverflow arrangement. */
 function coverPose(delta: number, width: number) {
   const abs = Math.abs(delta)
   const sign = delta < 0 ? -1 : 1
   const along = abs <= 1 ? abs * CENTER * width : CENTER * width + (abs - 1) * SPREAD * width
-  const face = Math.min(abs, 1)
+  const face = smoothstep(Math.min(abs, 1))
   return {
-    x: sign * along * (abs === 0 ? 0 : 1),
+    x: sign * along,
     z: -face * DEPTH * width,
-    rotateY: (delta < 0 ? face : -face) * TURN,
+    rotateY: sign * -1 * face * TURN,
+    scale: 1 - face * 0.06,
+    opacity: 1 - face * 0.22,
     zIndex: Math.round(100 - abs * 10),
   }
 }
@@ -160,6 +167,8 @@ function EventCoverflow({
   const reduce = useReducedMotion()
   const focus = useMotionValue(1)
   const coast = useRef<ReturnType<typeof animate> | null>(null)
+  const vel = useRef(0)
+  const lastMove = useRef(0)
   const pointer = useRef<{ id: number; lastX: number; originX: number; originY: number; horizontal: boolean | null } | null>(null)
   const dragged = useRef(false)
   const [width, setWidth] = useState(260)
@@ -174,11 +183,19 @@ function EventCoverflow({
   const goTo = (index: number) => {
     const next = Math.max(0, Math.min(events.length - 1, index))
     coast.current?.stop()
-    coast.current = animate(focus, next, { type: 'spring', stiffness: 260, damping: 30 })
+    coast.current = animate(focus, next, {
+      type: 'spring',
+      stiffness: 120,
+      damping: 20,
+      mass: 0.85,
+      restDelta: 0.001,
+    })
   }
 
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     coast.current?.stop()
+    vel.current = 0
+    lastMove.current = performance.now()
     dragged.current = false
     pointer.current = {
       id: event.pointerId,
@@ -206,8 +223,13 @@ function EventCoverflow({
     }
     const delta = event.clientX - drag.lastX
     drag.lastX = event.clientX
+    const now = performance.now()
+    const dt = Math.max(16, now - lastMove.current) / 1000
+    lastMove.current = now
     const step = CENTER * width
-    const next = Math.max(0, Math.min(events.length - 1, focus.get() - delta / step))
+    const dIndex = -delta / step
+    vel.current = vel.current * 0.35 + (dIndex / dt) * 0.65
+    const next = Math.max(0, Math.min(events.length - 1, focus.get() + dIndex))
     focus.set(next)
   }
 
@@ -215,7 +237,8 @@ function EventCoverflow({
     const drag = pointer.current
     pointer.current = null
     if (!drag || drag.id !== event.pointerId || !drag.horizontal) return
-    goTo(Math.round(focus.get()))
+    const projected = focus.get() + Math.max(-1.4, Math.min(1.4, vel.current * 0.2))
+    goTo(Math.round(projected))
   }
 
   if (reduce) {
@@ -233,7 +256,7 @@ function EventCoverflow({
   return (
     <div
       className="relative cursor-grab select-none active:cursor-grabbing"
-      style={{ height: CARD_H + 36, perspective: 1200, touchAction: 'pan-y' }}
+      style={{ height: CARD_H + 36, perspective: 1400, touchAction: 'pan-y' }}
       role="group"
       aria-label="Celebrations"
       tabIndex={0}
@@ -251,14 +274,19 @@ function EventCoverflow({
         }
       }}
     >
-      <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d' }}>
+      <motion.div
+        className="absolute inset-0"
+        style={{ transformStyle: 'preserve-3d' }}
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
         {events.map((ev, i) => (
           <CoverCard
             key={ev.id}
             index={i}
             focus={focus}
             width={width}
-            inView={inView}
             onSelect={() => {
               if (dragged.current) return
               goTo(i)
@@ -267,7 +295,7 @@ function EventCoverflow({
             <EventFace index={i} lang={lang} note={note} {...copy[ev.id]} />
           </CoverCard>
         ))}
-      </div>
+      </motion.div>
     </div>
   )
 }
@@ -276,14 +304,12 @@ function CoverCard({
   index,
   focus,
   width,
-  inView,
   onSelect,
   children,
 }: {
   index: number
   focus: MotionValue<number>
   width: number
-  inView: boolean
   onSelect: () => void
   children: ReactNode
 }) {
@@ -291,23 +317,24 @@ function CoverCard({
   const x = useTransform(pose, (p) => p.x)
   const z = useTransform(pose, (p) => p.z)
   const rotateY = useTransform(pose, (p) => p.rotateY)
+  const scale = useTransform(pose, (p) => p.scale)
+  const opacity = useTransform(pose, (p) => p.opacity)
   const zIndex = useTransform(pose, (p) => p.zIndex)
-  const transform = useMotionTemplate`translateX(${x}px) translateZ(${z}px) rotateY(${rotateY}deg)`
+  const transform = useMotionTemplate`translateX(${x}px) translateZ(${z}px) rotateY(${rotateY}deg) scale(${scale})`
 
   return (
     <motion.article
-      className="absolute top-1/2 left-1/2 overflow-hidden text-ivory shadow-[0_18px_40px_rgba(23,15,31,0.22)]"
+      className="absolute top-1/2 left-1/2 overflow-hidden text-ivory shadow-[0_22px_50px_rgba(23,15,31,0.28)]"
       style={{
         width,
         height: CARD_H,
         marginLeft: -width / 2,
         marginTop: -CARD_H / 2,
         transform,
+        opacity,
         zIndex,
+        willChange: 'transform',
       }}
-      initial={{ opacity: 0 }}
-      animate={inView ? { opacity: 1 } : {}}
-      transition={{ delay: 0.08 * index, duration: 0.55 }}
       onClick={onSelect}
     >
       {children}
