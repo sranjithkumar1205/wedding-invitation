@@ -1,5 +1,5 @@
 import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { events } from '../content/i18n'
 import { useLanguage } from '../hooks/useLanguage'
 
@@ -9,10 +9,80 @@ const accents = [
   'from-gold-deep to-maroon',
 ] as const
 
-export function Events() {
+const cardPhotos = [
+  'photos/web/04-hands-closeup.jpg',
+  'photos/web/05-wave-splash.jpg',
+  'photos/web/couple-stage.jpg',
+]
+
+export function Events({ onEnter }: { onEnter?: () => void }) {
   const { t, lang } = useLanguage()
-  const ref = useRef(null)
+  const ref = useRef<HTMLElement | null>(null)
+  const [sectionNode, setSectionNode] = useState<HTMLElement | null>(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
+  const setSection = useCallback((node: HTMLElement | null) => {
+    ref.current = node
+    setSectionNode(node)
+  }, [])
+
+  useEffect(() => {
+    const section = sectionNode
+    if (!section || !onEnter) return
+
+    let cancelled = false
+    let played = false
+
+    const imagesReady = Promise.all(
+      cardPhotos.map(
+        (path) =>
+          new Promise<void>((resolve) => {
+            const img = new Image()
+            const finish = () => resolve()
+            img.onload = finish
+            img.onerror = finish
+            img.src = `${import.meta.env.BASE_URL}${path}`
+            if (img.complete) finish()
+          }),
+      ),
+    )
+
+    const pageIsShowing = () => {
+      const rect = section.getBoundingClientRect()
+      const viewport = window.innerHeight
+      if (viewport <= 0) return false
+      const visible = Math.min(rect.bottom, viewport) - Math.max(rect.top, 0)
+      const wholeSectionOnScreen = rect.top >= -8 && rect.bottom <= viewport + 8
+      return wholeSectionOnScreen || visible >= viewport * 0.9
+    }
+
+    const tryPlay = () => {
+      if (cancelled || played || !pageIsShowing()) return
+      played = true
+      void imagesReady.then(() => {
+        if (cancelled) return
+        if (!pageIsShowing()) {
+          played = false
+          return
+        }
+        onEnter()
+      })
+    }
+
+    const observer = new IntersectionObserver(tryPlay, {
+      threshold: [0, 0.15, 0.35, 0.55, 0.75, 1],
+    })
+    observer.observe(section)
+    window.addEventListener('scroll', tryPlay, { passive: true })
+    window.addEventListener('resize', tryPlay)
+    tryPlay()
+
+    return () => {
+      cancelled = true
+      observer.disconnect()
+      window.removeEventListener('scroll', tryPlay)
+      window.removeEventListener('resize', tryPlay)
+    }
+  }, [onEnter, sectionNode])
 
   const copy = {
     pandakkal: { title: t.pandakkal, desc: t.pandakkalDesc, date: t.onDate.pandakkal, time: t.time.pandakkal },
@@ -21,7 +91,7 @@ export function Events() {
   } as const
 
   return (
-    <section ref={ref} className="relative bg-ivory-warm py-20 sm:py-28">
+    <section ref={setSection} className="relative bg-ivory-warm py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-14 text-center">
           <motion.h2

@@ -42,7 +42,7 @@ function Invitation() {
             <Countdown />
             <Couple />
             <PhotoStory />
-            <Events />
+            <Events onEnter={music.playInvitation} />
             <Venue />
             <Footer />
           </>
