@@ -1,7 +1,17 @@
 import { motion, AnimatePresence } from 'framer-motion'
+import type { CSSProperties } from 'react'
 import { photos } from '../content/i18n'
 import { useLanguage } from '../hooks/useLanguage'
 import { Petals } from './Petals'
+
+const heartRing: CSSProperties = {
+  WebkitMask: `url("data:image/svg+xml,${encodeURIComponent(
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 180' preserveAspectRatio='none'><path d='M100 162C100 162 26 112 26 68C26 38 50 22 74 40C88 52 100 70 100 70C100 70 112 52 126 40C150 22 174 38 174 68C174 112 100 162 100 162Z' fill='none' stroke='white' stroke-width='1.4'/></svg>",
+  )}") center / 100% 100% no-repeat`,
+  mask: `url("data:image/svg+xml,${encodeURIComponent(
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 180' preserveAspectRatio='none'><path d='M100 162C100 162 26 112 26 68C26 38 50 22 74 40C88 52 100 70 100 70C100 70 112 52 126 40C150 22 174 38 174 68C174 112 100 162 100 162Z' fill='none' stroke='white' stroke-width='1.4'/></svg>",
+  )}") center / 100% 100% no-repeat`,
+}
 
 type Props = {
   open: boolean
@@ -84,22 +94,28 @@ export function SealIntro({ open, onOpen }: Props) {
               whileTap={{ scale: 0.96 }}
               aria-label={t.openSeal}
             >
+              <svg className="absolute h-0 w-0" aria-hidden>
+                <clipPath id="seal-heart" clipPathUnits="objectBoundingBox">
+                  <path d="M0.5 0.9C0.5 0.9 0.13 0.622 0.13 0.378C0.13 0.211 0.25 0.122 0.37 0.222C0.44 0.289 0.5 0.389 0.5 0.389C0.5 0.389 0.56 0.289 0.63 0.222C0.75 0.122 0.87 0.211 0.87 0.378C0.87 0.622 0.5 0.9 0.5 0.9Z" />
+                </clipPath>
+              </svg>
               <motion.span
-                className="absolute inset-0 rounded-full border border-rose/40"
+                className="absolute inset-0 bg-rose/40"
+                style={heartRing}
                 animate={{ scale: [1, 1.14, 1], opacity: [0.75, 0.15, 0.75] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
               />
-              <motion.span
-                className="absolute inset-3 rounded-full border border-gold-bright/35"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
-              />
+              <span className="absolute inset-3 bg-gold-bright/35" style={heartRing} />
               {/* Wax seal — rose glow language from birthday gift */}
               <motion.span
-                className="absolute inset-5 rounded-full wax-seal"
+                className="absolute inset-5"
+                style={{ filter: 'drop-shadow(0 0 60px color-mix(in srgb, var(--color-rose) 45%, transparent))' }}
                 animate={{ scale: [1, 1.07, 1] }}
                 transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-              />
+              >
+                <span className="absolute -inset-1.5 bg-[#6a0f2a]" style={{ clipPath: 'url(#seal-heart)' }} />
+                <span className="absolute inset-0 wax-seal" style={{ clipPath: 'url(#seal-heart)', boxShadow: 'none' }} />
+              </motion.span>
               <span className="relative z-10 font-serif text-3xl italic text-[#f8d6dd] drop-shadow-sm">
                 R · C
               </span>
