@@ -9,7 +9,7 @@ import {
   useTransform,
   type MotionValue,
 } from 'framer-motion'
-import { useCallback, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
 import { photos } from '../content/i18n'
 import { useLanguage } from '../hooks/useLanguage'
 import { FullScreenViewer } from './MobileGallery'
@@ -19,6 +19,8 @@ const N = shots.length
 const TILT = -16
 const MAX_TILT = 28
 const AUTO_DEG_PER_S = 11
+/** Finger travel below this is a tap. Android taps often move farther than a mouse click. */
+const TAP_PX = 28
 
 type Tile = { x: number; y: number; z: number; yaw: number; lat: number }
 
@@ -94,6 +96,8 @@ export function SphereGallery() {
   const velY = useRef(0)
   const velX = useRef(0)
   const frontRef = useRef(0)
+  const press = useRef<{ x: number; y: number; id: number } | null>(null)
+  const openedAt = useRef(0)
 
   useAnimationFrame((_, delta) => {
     const dt = Math.min(delta, 50) / 1000
@@ -124,10 +128,85 @@ export function SphereGallery() {
 
   const shot = shots[front]
   const caption = tamil ? shot.captionTa : shot.captionEn
-  const open = useCallback((i: number) => {
-    if (dragged.current) return
+  const show = useCallback((i: number) => {
+    openedAt.current = performance.now()
     setViewer(i)
   }, [])
+  const open = useCallback(
+    (i: number) => {
+      if (dragged.current) return
+      if (performance.now() - openedAt.current < 450) return
+      show(i)
+    },
+    [show],
+  )
+
+  // Open the photo the finger is actually on. Transformed tiles overlap in
+  // layout on Android, so the click target is often the wrong picture.
+  const openAt = useCallback(
+    (clientX: number, clientY: number) => {
+      const stage = stageRef.current
+      if (!stage) return
+      const buttons = stage.querySelectorAll<HTMLButtonElement>('button[data-tile]')
+      let best = -1
+      let bestZ = -Infinity
+      const spinY = ry.get()
+      const spinX = rx.get()
+      buttons.forEach((button) => {
+        const index = Number(button.dataset.tile)
+        const z = depthOf(tiles[index], spinY, spinX)
+        if (z < 0.12) return
+        const rect = button.getBoundingClientRect()
+        const pad = 16
+        const inside =
+          clientX >= rect.left - pad &&
+          clientX <= rect.right + pad &&
+          clientY >= rect.top - pad &&
+          clientY <= rect.bottom + pad
+        if (!inside) return
+        if (z > bestZ) {
+          bestZ = z
+          best = index
+        }
+      })
+      if (best < 0) {
+        const rect = stage.getBoundingClientRect()
+        const radius = Number.parseFloat(getComputedStyle(stage).getPropertyValue('--r')) || rect.width * 0.36
+        const near =
+          Math.hypot(clientX - (rect.left + rect.width / 2), clientY - (rect.top + rect.height / 2)) < radius
+        if (near) best = frontRef.current
+      }
+      if (best >= 0) show(best)
+    },
+    [rx, ry, show],
+  )
+
+  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    dragging.current = true
+    dragged.current = false
+    velY.current = 0
+    velX.current = 0
+    press.current = { x: event.clientX, y: event.clientY, id: event.pointerId }
+  }
+
+  const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    const start = press.current
+    if (!start || start.id !== event.pointerId) return
+    press.current = null
+    dragging.current = false
+    const moved = Math.hypot(event.clientX - start.x, event.clientY - start.y)
+    if (moved > TAP_PX) return
+    dragged.current = false
+    velY.current = 0
+    velX.current = 0
+    openAt(event.clientX, event.clientY)
+  }
+
+  const releasePress = () => {
+    press.current = null
+    dragging.current = false
+  }
 
   return (
     <div className="relative overflow-hidden">
@@ -145,6 +224,9 @@ export function SphereGallery() {
         initial={{ opacity: 0, scale: 0.72, rotateX: 18 }}
         animate={inView ? { opacity: 1, scale: 1, rotateX: 0 } : {}}
         transition={{ type: 'spring', stiffness: 80, damping: 18 }}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={releasePress}
         onPanStart={() => {
           dragging.current = true
           dragged.current = false
@@ -152,13 +234,21 @@ export function SphereGallery() {
           velX.current = 0
         }}
         onPan={(_, info) => {
-          if (Math.abs(info.offset.x) + Math.abs(info.offset.y) > 8) dragged.current = true
+          const moved = Math.hypot(info.offset.x, info.offset.y)
+          if (moved <= TAP_PX) return
+          dragged.current = true
           ry.set(ry.get() + info.delta.x * 0.52)
           const nextX = rx.get() - info.delta.y * 0.28
           rx.set(Math.max(TILT - MAX_TILT, Math.min(TILT + MAX_TILT, nextX)))
         }}
         onPanEnd={(_, info) => {
           dragging.current = false
+          const moved = Math.hypot(info.offset.x, info.offset.y)
+          if (moved <= TAP_PX) {
+            velY.current = 0
+            velX.current = 0
+            return
+          }
           velY.current = Math.max(-480, Math.min(480, info.velocity.x * 0.48))
           velX.current = Math.max(-240, Math.min(240, -info.velocity.y * 0.22))
         }}
@@ -216,6 +306,7 @@ export function SphereGallery() {
             <SphereTile
               key={shots[i].src}
               tile={tile}
+              index={i}
               src={shots[i].thumb}
               label={tamil ? shots[i].captionTa : shots[i].captionEn}
               ry={ry}
@@ -262,6 +353,7 @@ export function SphereGallery() {
 
 function SphereTile({
   tile,
+  index,
   src,
   label,
   ry,
@@ -270,6 +362,7 @@ function SphereTile({
   onOpen,
 }: {
   tile: Tile
+  index: number
   src: string
   label: string
   ry: MotionValue<number>
@@ -292,6 +385,7 @@ function SphereTile({
       type="button"
       onClick={onOpen}
       aria-label={label}
+      data-tile={index}
       className="absolute inset-0 m-auto p-0 outline-none"
       style={{
         width: 'calc(var(--r) * 0.78)',
