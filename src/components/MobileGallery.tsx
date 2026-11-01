@@ -6,6 +6,7 @@ import {
   type PanInfo,
 } from 'framer-motion'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { photos } from '../content/i18n'
 import { useLanguage } from '../hooks/useLanguage'
 
@@ -260,19 +261,23 @@ export function FullScreenViewer({
 
   const shot = index === null ? null : shots[index]
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {shot && index !== null && (
         <motion.div
-          className="fixed inset-0 z-[100] flex flex-col bg-black/95"
+          className="fixed inset-0 z-[100] flex flex-col bg-black"
           role="dialog"
           aria-modal="true"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
+          style={{
+            paddingTop: 'env(safe-area-inset-top)',
+            paddingBottom: 'env(safe-area-inset-bottom)',
+          }}
         >
-          <div className="flex items-center justify-between px-4 pt-4 text-sm text-ivory/80">
+          <div className="flex items-center justify-between pt-4 pr-20 pl-4 text-sm text-ivory/80">
             <span className="tracking-[0.2em] tabular-nums">
               {String(index + 1).padStart(2, '0')} / {String(N).padStart(2, '0')}
             </span>
@@ -280,9 +285,16 @@ export function FullScreenViewer({
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-xl leading-none text-ivory"
+              className="fixed z-[110] flex h-12 w-12 items-center justify-center rounded-full bg-black text-white shadow-[0_8px_24px_rgba(0,0,0,0.45)] ring-2 ring-white/80"
+              style={{
+                top: 'max(0.75rem, env(safe-area-inset-top))',
+                right: 'max(0.75rem, env(safe-area-inset-right))',
+                touchAction: 'manipulation',
+              }}
             >
-              ×
+              <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+              </svg>
             </button>
           </div>
 
@@ -305,7 +317,10 @@ export function FullScreenViewer({
             />
           </motion.div>
 
-          <div className="px-6 pb-6 text-center text-ivory">
+          <div
+            className="px-6 pt-4 text-center text-ivory"
+            style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
+          >
             <p className={tamil ? 'font-tamil text-base' : 'font-display text-2xl'}>
               {tamil ? shot.captionTa : shot.captionEn}
             </p>
@@ -330,6 +345,7 @@ export function FullScreenViewer({
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   )
 }
