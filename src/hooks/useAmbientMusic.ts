@@ -35,7 +35,7 @@ export function useAmbientMusic() {
         () => {
           const max = Number.isFinite(audio.duration) ? Math.max(0, audio.duration - 0.25) : resumeAt
           audio.currentTime = Math.min(resumeAt, max)
-          if (!mutedRef.current) void audio.play()
+          if (!mutedRef.current && document.visibilityState === 'visible') void audio.play()
         },
         { once: true },
       )
@@ -106,7 +106,29 @@ export function useAmbientMusic() {
     const preload = new Audio(INVITE)
     preload.preload = 'auto'
     preload.load()
+
+    const pauseForBackground = () => {
+      audioRef.current?.pause()
+    }
+    const resumeIfAudible = () => {
+      if (document.visibilityState === 'hidden') return
+      const audio = audioRef.current
+      if (!audio || mutedRef.current) return
+      void audio.play()
+    }
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') pauseForBackground()
+      else resumeIfAudible()
+    }
+
+    document.addEventListener('visibilitychange', onVisibility)
+    window.addEventListener('pagehide', pauseForBackground)
+    window.addEventListener('pageshow', resumeIfAudible)
+
     return () => {
+      document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('pagehide', pauseForBackground)
+      window.removeEventListener('pageshow', resumeIfAudible)
       preload.src = ''
       const audio = audioRef.current
       if (!audio) return
