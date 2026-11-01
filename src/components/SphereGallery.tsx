@@ -19,36 +19,49 @@ const N = shots.length
 const TILT = -16
 const MAX_TILT = 28
 const AUTO_DEG_PER_S = 11
-const PHI = (1 + Math.sqrt(5)) / 2
 
 type Tile = { x: number; y: number; z: number; yaw: number; lat: number }
 
-/**
- * 12 photos sit on the 12 vertices of an icosahedron — the evenest packing
- * of 12 points on a sphere, which is what gives this globe its regular look.
- */
-const tiles: Tile[] = (
-  [
-    [0, 1, PHI],
-    [0, -1, PHI],
-    [0, 1, -PHI],
-    [0, -1, -PHI],
-    [1, PHI, 0],
-    [-1, PHI, 0],
-    [1, -PHI, 0],
-    [-1, -PHI, 0],
-    [PHI, 0, 1],
-    [-PHI, 0, 1],
-    [PHI, 0, -1],
-    [-PHI, 0, -1],
-  ] as const
-).map(([x, y, z]) => {
-  const len = Math.hypot(x, y, z)
-  const nx = x / len
-  const ny = y / len
-  const nz = z / len
-  return { x: nx, y: ny, z: nz, yaw: Math.atan2(nx, nz), lat: Math.asin(ny) }
-})
+/** Spread every story photo evenly on the globe, with the first facing forward. */
+function sphereTiles(count: number): Tile[] {
+  const golden = Math.PI * (3 - Math.sqrt(5))
+  const raw = Array.from({ length: count }, (_, i) => {
+    const y = 1 - (2 * i + 1) / count
+    const radius = Math.sqrt(1 - y * y)
+    const theta = golden * i
+    return { x: Math.cos(theta) * radius, y, z: Math.sin(theta) * radius }
+  })
+  const origin = raw[0]
+  const axisLen = Math.hypot(origin.y, origin.x)
+  const angle = Math.acos(Math.min(1, Math.max(-1, origin.z)))
+  const turned =
+    axisLen < 1e-6
+      ? raw
+      : raw.map((point) => {
+          const ax = origin.y / axisLen
+          const ay = -origin.x / axisLen
+          const dot = ax * point.x + ay * point.y
+          const crossX = ay * point.z
+          const crossY = -ax * point.z
+          const crossZ = ax * point.y - ay * point.x
+          const sine = Math.sin(angle)
+          const cosine = Math.cos(angle)
+          return {
+            x: point.x * cosine + crossX * sine + ax * dot * (1 - cosine),
+            y: point.y * cosine + crossY * sine + ay * dot * (1 - cosine),
+            z: point.z * cosine + crossZ * sine,
+          }
+        })
+  return turned.map((point) => ({
+    x: point.x,
+    y: point.y,
+    z: point.z,
+    yaw: Math.atan2(point.x, point.z),
+    lat: Math.asin(Math.min(1, Math.max(-1, point.y))),
+  }))
+}
+
+const tiles = sphereTiles(N)
 
 /** Start with the stage portrait (photo 0) facing the viewer. */
 const START_RY = (Math.atan2(-tiles[0].x, tiles[0].z) * 180) / Math.PI

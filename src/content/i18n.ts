@@ -13,16 +13,16 @@ export const photos = {
   story: [
     { src: asset('photos/web/couple-stage.jpg'), thumb: asset('photos/thumb/couple-stage.jpg'), card: asset('photos/med/couple-stage.jpg'), captionEn: 'On the mandapam, forever begins', captionTa: 'மண்டபத்தில் தொடங்கும் நித்தியம்' },
     { src: asset('photos/web/01-bw-dip.jpg'), thumb: asset('photos/thumb/01-bw-dip.jpg'), card: asset('photos/med/01-bw-dip.jpg'), captionEn: 'Where the tide met forever', captionTa: 'அலைகள் சந்தித்த நித்தியம்' },
-    { src: asset('photos/web/02-beach-lookback.jpg'), thumb: asset('photos/thumb/02-beach-lookback.jpg'), card: asset('photos/med/02-beach-lookback.jpg'), captionEn: 'A glance that stayed', captionTa: 'நிலைத்த ஒரு பார்வை' },
+    { src: asset('photos/web/12-shore-look.jpg'), thumb: asset('photos/thumb/12-shore-look.jpg'), card: asset('photos/med/12-shore-look.jpg'), captionEn: 'Eyes meeting at the shore', captionTa: 'கரையில் சந்தித்த கண்கள்' },
     { src: asset('photos/web/03-into-waves.jpg'), thumb: asset('photos/thumb/03-into-waves.jpg'), card: asset('photos/med/03-into-waves.jpg'), captionEn: 'Into the waves, hand in hand', captionTa: 'அலைகளுக்குள், கைகோர்த்து' },
     { src: asset('photos/web/04-hands-closeup.jpg'), thumb: asset('photos/thumb/04-hands-closeup.jpg'), card: asset('photos/med/04-hands-closeup.jpg'), captionEn: 'Promises in quiet hands', captionTa: 'அமைதியான கைகளில் வாக்குறுதி' },
-    { src: asset('photos/web/05-wave-splash.jpg'), thumb: asset('photos/thumb/05-wave-splash.jpg'), card: asset('photos/med/05-wave-splash.jpg'), captionEn: 'Joy that splashes', captionTa: 'தெறிக்கும் மகிழ்ச்சி' },
+    { src: asset('photos/web/13-hand-to-hand.jpg'), thumb: asset('photos/thumb/13-hand-to-hand.jpg'), card: asset('photos/med/13-hand-to-hand.jpg'), captionEn: 'The sea, from hand to hand', captionTa: 'கையிலிருந்து கைக்குக் கடல்', tall: true },
     { src: asset('photos/web/06-running-beach.jpg'), thumb: asset('photos/thumb/06-running-beach.jpg'), card: asset('photos/med/06-running-beach.jpg'), captionEn: 'Running toward forever', captionTa: 'நித்தியத்தை நோக்கி' },
     { src: asset('photos/web/07-bw-legs.jpg'), thumb: asset('photos/thumb/07-bw-legs.jpg'), card: asset('photos/med/07-bw-legs.jpg'), captionEn: 'Steps in soft light', captionTa: 'மென் ஒளியில் அடிகள்' },
     { src: asset('photos/web/08-oonjal-veena.jpg'), thumb: asset('photos/thumb/08-oonjal-veena.jpg'), card: asset('photos/med/08-oonjal-veena.jpg'), captionEn: 'Melody on the oonjal', captionTa: 'ஊஞ்சலில் இசை' },
     { src: asset('photos/web/09-oonjal-close.jpg'), thumb: asset('photos/thumb/09-oonjal-close.jpg'), card: asset('photos/med/09-oonjal-close.jpg'), captionEn: 'Home in each other', captionTa: 'ஒருவருக்கொருவர் இல்லம்' },
-    { src: asset('photos/web/10-veena-laugh.jpg'), thumb: asset('photos/thumb/10-veena-laugh.jpg'), card: asset('photos/med/10-veena-laugh.jpg'), captionEn: 'Laughter between notes', captionTa: 'சுரங்களுக்கிடையே சிரிப்பு' },
-    { src: asset('photos/chandrika.jpeg'), thumb: asset('photos/chandrika.jpeg'), card: asset('photos/chandrika.jpeg'), captionEn: 'Grace in gold & silk', captionTa: 'பட்டும் பொன்னும் அழகு' },
+    { src: asset('photos/web/14-window-gold.jpg'), thumb: asset('photos/thumb/14-window-gold.jpg'), card: asset('photos/med/14-window-gold.jpg'), captionEn: 'Gold light by the window', captionTa: 'சாளர ஒளியில் பொன்', tall: true },
+    { src: asset('photos/web/15-quiet-room.jpg'), thumb: asset('photos/thumb/15-quiet-room.jpg'), card: asset('photos/med/15-quiet-room.jpg'), captionEn: 'Stillness in one room', captionTa: 'ஒரே அறையில் அமைதி', tall: true },
   ],
 } as const
 
@@ -34,7 +34,12 @@ export const venue = {
     'https://www.google.com/maps?q=Praneetha+Palace,+68+MR+Nagar,+Ethiraj+Samy+Salai+Road,+Kodungaiyur,+Chennai+600081&output=embed',
   mapsLink:
     'https://www.google.com/maps/dir/?api=1&destination=Praneetha+Palace,+No.+68,+MR+Nagar,+Ethiraj+Samy+Salai+Road,+Kodungaiyur,+East+Erukkancheri,+Chennai-600081',
-  contacts: ['9080322416', '9344225487'],
+  contacts: [
+    { role: 'groomBrothers', phones: ['9840225429', '8608662808'] },
+    { role: 'groomDad', phones: ['9344225487'] },
+    { role: 'brideBrother', phones: ['9500146922'] },
+    { role: 'brideDad', phones: ['9176033203'] },
+  ],
 } as const
 
 /** Muhurtham start — countdown target */
@@ -115,6 +120,12 @@ const en = {
   venueTitle: 'Venue',
   getDirections: 'Get Directions',
   callUs: 'Call',
+  contactRoles: {
+    groomBrothers: "Groom's brothers",
+    groomDad: "Groom's Dad",
+    brideBrother: "Bride's Brother",
+    brideDad: "Bride's Dad",
+  },
   saveCalendar: 'Save to Calendar',
   shareWhatsApp: 'Share on WhatsApp',
   mute: 'Mute',
@@ -176,6 +187,12 @@ const ta = {
   venueTitle: 'இடம்',
   getDirections: 'வழிகாட்டி',
   callUs: 'அழைக்க',
+  contactRoles: {
+    groomBrothers: 'மணமகனின் சகோதரர்கள்',
+    groomDad: 'மணமகனின் தந்தை',
+    brideBrother: 'மணமகளின் சகோதரர்',
+    brideDad: 'மணமகளின் தந்தை',
+  },
   saveCalendar: 'நாட்காட்டியில் சேமி',
   shareWhatsApp: 'WhatsApp-இல் பகிர்',
   mute: 'நிசப்தம்',

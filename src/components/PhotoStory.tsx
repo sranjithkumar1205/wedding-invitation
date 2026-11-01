@@ -66,6 +66,7 @@ export function PhotoStory() {
             caption={lang === 'ta' ? shot.captionTa : shot.captionEn}
             index={i}
             tamil={lang === 'ta'}
+            tall={'tall' in shot && shot.tall}
           />
         ))}
       </div>
@@ -83,11 +84,13 @@ function RevealShot({
   caption,
   index,
   tamil,
+  tall,
 }: {
   src: string
   caption: string
   index: number
   tamil: boolean
+  tall: boolean
 }) {
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({
@@ -112,14 +115,18 @@ function RevealShot({
       className={`relative ${fromLeft ? 'md:ml-0 md:mr-[12%]' : 'md:ml-[12%] md:mr-0'}`}
     >
       <motion.div
-        className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[21/9]"
+        className={
+          tall
+            ? 'relative mx-auto aspect-[3/4] w-full max-w-[440px] overflow-hidden'
+            : 'relative aspect-[16/10] w-full overflow-hidden sm:aspect-[21/9]'
+        }
         style={{ clipPath }}
       >
         <motion.img
           src={src}
           alt={caption}
-          className="absolute inset-0 h-[128%] w-full object-cover"
-          style={{ y, scale, top: '-14%' }}
+          className={`absolute inset-0 w-full object-cover ${tall ? 'h-[112%]' : 'h-[128%]'}`}
+          style={{ y, scale, top: tall ? '-6%' : '-14%' }}
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ocean/80 via-transparent to-ocean/20" />

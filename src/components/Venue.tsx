@@ -102,22 +102,35 @@ export function Venue() {
             </motion.p>
 
             <motion.div
-              className="mt-7 flex flex-wrap gap-2.5"
+              className="mt-7 grid gap-y-5"
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.5 }}
             >
-              {venue.contacts.map((phone, i) => (
-                <motion.a
-                  key={phone}
-                  href={`tel:${phone}`}
-                  className="border border-maroon/20 bg-ivory/80 px-4 py-2 text-sm text-maroon shadow-sm transition hover:border-maroon hover:bg-maroon hover:text-ivory"
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ delay: 0.55 + i * 0.05 }}
-                >
-                  {t.callUs} {phone}
-                </motion.a>
+              {venue.contacts.map((group) => (
+                <div key={group.role}>
+                  <p
+                    className={`mb-2 text-gold-deep ${
+                      lang === 'ta'
+                        ? 'font-tamil text-sm'
+                        : 'text-[0.68rem] tracking-[0.18em] uppercase'
+                    }`}
+                  >
+                    {t.contactRoles[group.role]}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {group.phones.map((phone) => (
+                      <a
+                        key={phone}
+                        href={`tel:${phone}`}
+                        aria-label={`${t.callUs} ${t.contactRoles[group.role]} ${phone}`}
+                        className="border border-maroon/20 bg-ivory/80 px-3 py-1.5 text-sm text-maroon shadow-sm transition hover:border-maroon hover:bg-maroon hover:text-ivory"
+                      >
+                        {phone}
+                      </a>
+                    ))}
+                  </div>
+                </div>
               ))}
             </motion.div>
 
