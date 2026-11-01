@@ -251,8 +251,8 @@ function HeartIntro({
           >
             <HeartGlyph />
             <span
-              className={`absolute text-[#fff6ea] ${
-                tamil ? 'mb-6 max-w-[9rem] text-center font-tamil text-lg font-semibold' : 'mb-7 font-display text-5xl sm:text-6xl'
+              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#fff6ea] ${
+                tamil ? 'max-w-[9rem] text-center font-tamil text-lg font-semibold' : 'font-display text-5xl sm:text-6xl'
               }`}
             >
               {weds}
@@ -312,9 +312,9 @@ function HeartGlyph() {
     <svg viewBox="0 0 200 180" className="h-full w-full drop-shadow-md" aria-hidden>
       <defs>
         <linearGradient id="heart-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f8d0dc" />
-          <stop offset="48%" stopColor="#c93a5e" />
-          <stop offset="100%" stopColor="#7a2440" />
+          <stop offset="0%" stopColor="#ff7aa3" />
+          <stop offset="42%" stopColor="#e23b68" />
+          <stop offset="100%" stopColor="#8d2044" />
         </linearGradient>
       </defs>
       <path
