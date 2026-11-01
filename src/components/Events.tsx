@@ -258,7 +258,6 @@ function EventCoverflow({
     <div
       className="relative cursor-grab select-none active:cursor-grabbing"
       style={{ height: CARD_H + 36, perspective: 1400, touchAction: 'pan-y', WebkitUserSelect: 'none', userSelect: 'none' }}
-      onSelectStart={(event) => event.preventDefault()}
       role="group"
       aria-label="Celebrations"
       tabIndex={0}
