@@ -1,4 +1,4 @@
-import { motion, useInView } from 'framer-motion'
+import { AnimatePresence, motion, useInView } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { muhurthamISO } from '../content/i18n'
 import { useLanguage } from '../hooks/useLanguage'
@@ -67,15 +67,21 @@ export function Countdown() {
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.1 * i, duration: 0.55 }}
               >
-                <motion.span
-                  key={cell.value}
-                  className="block font-serif text-4xl font-semibold tabular-nums text-gold-bright sm:text-5xl"
-                  initial={{ y: 12, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  {String(cell.value).padStart(2, '0')}
-                </motion.span>
+                {/* Rolling digits: the old number slides up and out, the new one rolls in */}
+                <span className="relative block h-[1.25em] overflow-hidden font-serif text-4xl leading-[1.25] font-semibold tabular-nums text-gold-bright sm:text-5xl">
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    <motion.span
+                      key={cell.value}
+                      className="block"
+                      initial={{ y: '100%', opacity: 0 }}
+                      animate={{ y: '0%', opacity: 1 }}
+                      exit={{ y: '-100%', opacity: 0 }}
+                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      {String(cell.value).padStart(2, '0')}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>
                 <span
                   className={`mt-2 block text-[0.65rem] tracking-[0.22em] text-ivory/65 ${lang === 'ta' ? 'font-tamil tracking-wide normal-case text-xs' : 'uppercase'}`}
                 >

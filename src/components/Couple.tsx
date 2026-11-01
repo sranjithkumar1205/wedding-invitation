@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { photos } from '../content/i18n'
 import { useLanguage } from '../hooks/useLanguage'
+import { ScrollWords } from './ScrollWords'
 
 export function Couple() {
   const { t, lang } = useLanguage()
@@ -29,13 +30,7 @@ export function Couple() {
             lang === 'ta' ? 'font-tamil' : 'font-serif italic'
           }`}
         >
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.15, duration: 0.9 }}
-          >
-            “{t.quote}”
-          </motion.p>
+          <ScrollWords text={`“${t.quote}”`} />
         </blockquote>
 
         <div className="grid items-stretch gap-10 md:grid-cols-[1fr_auto_1fr] md:gap-6">

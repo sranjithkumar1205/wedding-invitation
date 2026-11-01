@@ -218,7 +218,7 @@ export function MobileGallery() {
   )
 }
 
-function FullScreenViewer({
+export function FullScreenViewer({
   index,
   tamil,
   onChange,
