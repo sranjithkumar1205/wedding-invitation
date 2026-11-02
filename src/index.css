@@ -68,6 +68,14 @@ select,
   -webkit-touch-callout: default;
 }
 
+/* Photos stay visible, but the usual save gestures do not get the file. */
+img {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+  pointer-events: none;
+}
+
 #root,
 main {
   width: 100%;
