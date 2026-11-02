@@ -2,14 +2,13 @@ import {
   AnimatePresence,
   motion,
   useAnimationFrame,
-  useInView,
   useMotionTemplate,
   useMotionValue,
   useReducedMotion,
   useTransform,
   type MotionValue,
 } from 'framer-motion'
-import { useCallback, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
 import { photos } from '../content/i18n'
 import { useLanguage } from '../hooks/useLanguage'
 import { FullScreenViewer } from './MobileGallery'
@@ -90,7 +89,19 @@ export function SphereGallery() {
   const [viewer, setViewer] = useState<number | null>(null)
 
   const stageRef = useRef<HTMLDivElement>(null)
-  const inView = useInView(stageRef, { margin: '-60px' })
+  const [stageNode, setStageNode] = useState<HTMLDivElement | null>(null)
+  const [inView, setInView] = useState(false)
+
+  useEffect(() => {
+    const node = stageNode
+    if (!node) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: '-40px' },
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [stageNode])
   const dragging = useRef(false)
   const dragged = useRef(false)
   const velY = useRef(0)
@@ -211,14 +222,15 @@ export function SphereGallery() {
   return (
     <div className="relative overflow-hidden">
       <motion.div
-        ref={stageRef}
-        className="relative mx-auto w-full max-w-md cursor-grab overflow-hidden select-none active:cursor-grabbing"
+        ref={(node) => {
+          stageRef.current = node
+          setStageNode(node)
+        }}
+        className="sphere-stage relative mx-auto w-full max-w-md cursor-grab overflow-hidden select-none active:cursor-grabbing sm:max-w-3xl"
         style={
           {
-            height: 'min(108vw, 440px)',
-            perspective: 1100,
+            perspective: 1400,
             touchAction: 'none',
-            '--r': 'min(39vw, 158px)',
           } as CSSProperties
         }
         initial={{ opacity: 0, scale: 0.72, rotateX: 18 }}
@@ -318,7 +330,7 @@ export function SphereGallery() {
         </motion.div>
       </motion.div>
 
-      <div className="mx-auto -mt-1 flex max-w-md flex-col items-center px-6 text-center">
+      <div className="mx-auto -mt-1 flex max-w-md flex-col items-center px-6 text-center sm:max-w-3xl">
         <span className="mb-2 text-[0.65rem] tracking-[0.28em] text-sand/70 tabular-nums">
           {String(front + 1).padStart(2, '0')} / {String(N).padStart(2, '0')}
         </span>

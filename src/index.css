@@ -68,6 +68,18 @@ select,
   -webkit-touch-callout: default;
 }
 
+.sphere-stage {
+  height: min(108vw, 440px);
+  --r: min(39vw, 158px);
+}
+
+@media (min-width: 640px) {
+  .sphere-stage {
+    height: min(82vh, 720px);
+    --r: min(18vw, 220px);
+  }
+}
+
 /* Photos stay visible, but the usual save gestures do not get the file. */
 img {
   -webkit-user-drag: none;
