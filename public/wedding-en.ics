@@ -1,0 +1,25 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//RanjithChandrika//Wedding//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Ranjith & Chandrika Wedding
+BEGIN:VEVENT
+UID:reception@ranjith-chandrika.wedding
+DTSTAMP:20261102T000000Z
+DTSTART:20261114T130000Z
+DTEND:20261114T163000Z
+SUMMARY:Reception & Bride Welcome — Ranjith & Chandrika
+LOCATION:Praneetha Palace\, No. 68\, MR Nagar\, Ethiraj Samy Salai Road\, Kodungaiyur\, East Erukkancheri\, Chennai-600081
+DESCRIPTION:Praneetha Palace — No. 68\, MR Nagar\, Ethiraj Samy Salai Road\, Kodungaiyur\, East Erukkancheri\, Chennai-600081
+END:VEVENT
+BEGIN:VEVENT
+UID:wedding@ranjith-chandrika.wedding
+DTSTAMP:20261102T000000Z
+DTSTART:20261115T020000Z
+DTEND:20261115T033000Z
+SUMMARY:Wedding · Subamuhurtham — Ranjith & Chandrika
+LOCATION:Praneetha Palace\, No. 68\, MR Nagar\, Ethiraj Samy Salai Road\, Kodungaiyur\, East Erukkancheri\, Chennai-600081
+DESCRIPTION:Praneetha Palace — No. 68\, MR Nagar\, Ethiraj Samy Salai Road\, Kodungaiyur\, East Erukkancheri\, Chennai-600081
+END:VEVENT
+END:VCALENDAR

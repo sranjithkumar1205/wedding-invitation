@@ -2,7 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { venue } from '../content/i18n'
 import { useLanguage } from '../hooks/useLanguage'
-import { downloadWeddingICS, whatsappShareUrl } from '../lib/calendar'
+import { addWeddingToCalendar, whatsappShareUrl } from '../lib/calendar'
 
 export function Venue() {
   const { t, lang } = useLanguage()
@@ -152,7 +152,7 @@ export function Venue() {
               </motion.a>
               <motion.button
                 type="button"
-                onClick={() => downloadWeddingICS(lang)}
+                onClick={() => addWeddingToCalendar(lang)}
                 className="border border-gold-deep/40 bg-transparent px-5 py-3 text-sm text-maroon transition hover:border-gold-deep hover:bg-gold/10"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
