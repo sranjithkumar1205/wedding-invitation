@@ -152,6 +152,7 @@ export function Venue() {
                 {t.getDirections}
               </motion.a>
               {links.map((item) => (
+                <motion.a
                   key={item.label}
                   href={item.href}
                   target="_blank"
