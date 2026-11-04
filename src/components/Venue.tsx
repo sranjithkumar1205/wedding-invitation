@@ -2,13 +2,14 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { venue } from '../content/i18n'
 import { useLanguage } from '../hooks/useLanguage'
-import { addWeddingToCalendar, whatsappShareUrl } from '../lib/calendar'
+import { calendarLinks, whatsappShareUrl } from '../lib/calendar'
 
 export function Venue() {
   const { t, lang } = useLanguage()
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
+  const links = calendarLinks(lang)
   const shareText =
     lang === 'ta'
       ? `ரஞ்சித் குமார் & சந்திரிகா தேவி திருமண அழைப்பு · 15 நவம்பர் 2026 · ${venue.name}, சென்னை. ${venue.mapsLink}`
@@ -150,15 +151,18 @@ export function Venue() {
               >
                 {t.getDirections}
               </motion.a>
-              <motion.button
-                type="button"
-                onClick={() => addWeddingToCalendar(lang)}
-                className="border border-gold-deep/40 bg-transparent px-5 py-3 text-sm text-maroon transition hover:border-gold-deep hover:bg-gold/10"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {t.saveCalendar}
-              </motion.button>
+              {links.map((item) => (
+                  key={item.label}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="border border-gold-deep/40 bg-transparent px-5 py-3 text-sm text-maroon transition hover:border-gold-deep hover:bg-gold/10"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {item.label}
+                </motion.a>
+              ))}
               <motion.a
                 href={whatsappShareUrl(shareText)}
                 target="_blank"

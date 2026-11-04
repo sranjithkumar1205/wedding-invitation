@@ -4,22 +4,32 @@ PRODID:-//RanjithChandrika//Wedding//TA
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:ரஞ்சித் & சந்திரிகா திருமணம்
+X-WR-TIMEZONE:Asia/Kolkata
+BEGIN:VTIMEZONE
+TZID:Asia/Kolkata
+BEGIN:STANDARD
+DTSTART:19700101T000000
+TZOFFSETFROM:+0530
+TZOFFSETTO:+0530
+TZNAME:IST
+END:STANDARD
+END:VTIMEZONE
 BEGIN:VEVENT
 UID:reception@ranjith-chandrika.wedding
 DTSTAMP:20261102T000000Z
-DTSTART:20261114T130000Z
-DTEND:20261114T163000Z
+DTSTART;TZID=Asia/Kolkata:20261114T183000
+DTEND;TZID=Asia/Kolkata:20261114T220000
 SUMMARY:வரவேற்பு · மணமகள் அழைப்பு — ரஞ்சித் & சந்திரிகா
 LOCATION:Praneetha Palace\, No. 68\, MR Nagar\, Ethiraj Samy Salai Road\, Kodungaiyur\, East Erukkancheri\, Chennai-600081
-DESCRIPTION:Praneetha Palace — No. 68\, MR Nagar\, Ethiraj Samy Salai Road\, Kodungaiyur\, East Erukkancheri\, Chennai-600081
+DESCRIPTION:Praneetha Palace\, No. 68\, MR Nagar\, Ethiraj Samy Salai Road\, Kodungaiyur\, East Erukkancheri\, Chennai-600081
 END:VEVENT
 BEGIN:VEVENT
 UID:wedding@ranjith-chandrika.wedding
 DTSTAMP:20261102T000000Z
-DTSTART:20261115T020000Z
-DTEND:20261115T033000Z
+DTSTART;TZID=Asia/Kolkata:20261115T073000
+DTEND;TZID=Asia/Kolkata:20261115T090000
 SUMMARY:திருமணம் · சுபமுகூர்த்தம் — ரஞ்சித் & சந்திரிகா
 LOCATION:Praneetha Palace\, No. 68\, MR Nagar\, Ethiraj Samy Salai Road\, Kodungaiyur\, East Erukkancheri\, Chennai-600081
-DESCRIPTION:Praneetha Palace — No. 68\, MR Nagar\, Ethiraj Samy Salai Road\, Kodungaiyur\, East Erukkancheri\, Chennai-600081
+DESCRIPTION:Praneetha Palace\, No. 68\, MR Nagar\, Ethiraj Samy Salai Road\, Kodungaiyur\, East Erukkancheri\, Chennai-600081
 END:VEVENT
 END:VCALENDAR

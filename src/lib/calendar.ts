@@ -1,27 +1,55 @@
-function calendarFileUrl(lang: 'en' | 'ta') {
-  const file = lang === 'ta' ? 'wedding-ta.ics' : 'wedding-en.ics'
-  return new URL(`${import.meta.env.BASE_URL}${file}`, window.location.origin).href
+import { venue, type Lang } from '../content/i18n'
+
+const place = `${venue.name}, ${venue.address}`
+
+const savedEvents = {
+  en: [
+    {
+      label: 'Save Reception',
+      title: 'Reception & Bride Welcome — Ranjith & Chandrika',
+      start: '20261114T183000',
+      end: '20261114T220000',
+    },
+    {
+      label: 'Save Wedding',
+      title: 'Wedding · Subamuhurtham — Ranjith & Chandrika',
+      start: '20261115T073000',
+      end: '20261115T090000',
+    },
+  ],
+  ta: [
+    {
+      label: 'வரவேற்பைச் சேமி',
+      title: 'வரவேற்பு · மணமகள் அழைப்பு — ரஞ்சித் & சந்திரிகா',
+      start: '20261114T183000',
+      end: '20261114T220000',
+    },
+    {
+      label: 'திருமணத்தைச் சேமி',
+      title: 'திருமணம் · சுபமுகூர்த்தம் — ரஞ்சித் & சந்திரிகா',
+      start: '20261115T073000',
+      end: '20261115T090000',
+    },
+  ],
+} as const
+
+function googleEventUrl(title: string, start: string, end: string) {
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: title,
+    dates: `${start}/${end}`,
+    details: `${title}\n${place}`,
+    location: place,
+    ctz: 'Asia/Kolkata',
+  })
+  return `https://calendar.google.com/calendar/render?${params.toString()}`
 }
 
-function isAppleMobile() {
-  const ua = navigator.userAgent
-  return /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-}
-
-/** Open the phone or computer calendar with all three functions ready to save. */
-export function addWeddingToCalendar(lang: 'en' | 'ta' = 'en') {
-  const icsUrl = calendarFileUrl(lang)
-  const host = window.location.hostname
-  const onLiveSite = host !== 'localhost' && host !== '127.0.0.1'
-
-  if (isAppleMobile() || !onLiveSite) {
-    window.location.assign(icsUrl)
-    return
-  }
-
-  const google = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(icsUrl)}`
-  const opened = window.open(google, '_blank', 'noopener,noreferrer')
-  if (!opened) window.location.assign(google)
+export function calendarLinks(lang: Lang) {
+  return savedEvents[lang].map((event) => ({
+    label: event.label,
+    href: googleEventUrl(event.title, event.start, event.end),
+  }))
 }
 
 export function whatsappShareUrl(text: string) {
