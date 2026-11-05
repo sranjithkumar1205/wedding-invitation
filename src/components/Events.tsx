@@ -15,12 +15,14 @@ import { useLanguage } from '../hooks/useLanguage'
 const accents = [
   'from-maroon/90 to-maroon-deep',
   'from-ocean to-[#0f3340]',
+  'from-plum to-maroon',
   'from-gold-deep to-maroon',
 ] as const
 
 const cardPhotos = [
   'photos/web/04-hands-closeup.jpg',
   'photos/web/14-window-gold.jpg',
+  'photos/web/06-running-beach.jpg',
   'photos/web/couple-stage.jpg',
 ]
 
@@ -96,6 +98,7 @@ export function Events({ onEnter }: { onEnter?: () => void }) {
   const copy = {
     pandakkal: { title: t.pandakkal, desc: t.pandakkalDesc, date: t.onDate.pandakkal, time: t.time.pandakkal },
     reception: { title: t.reception, desc: t.receptionDesc, date: t.onDate.reception, time: t.time.reception },
+    dj: { title: t.dj, desc: t.djDesc, date: t.onDate.dj, time: t.time.dj },
     wedding: { title: t.wedding, desc: t.weddingDesc, date: t.onDate.wedding, time: t.time.wedding },
   } as const
 
@@ -247,10 +250,10 @@ function EventCoverflow({
 
   if (reduce) {
     return (
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2">
         {events.map((ev, i) => (
           <article key={ev.id} className="relative min-h-[280px] overflow-hidden text-ivory select-none">
-            <EventFace index={i} lang={lang} note={note} {...copy[ev.id]} />
+            <EventFace id={ev.id} index={i} lang={lang} note={note} {...copy[ev.id]} />
           </article>
         ))}
       </div>
@@ -296,7 +299,7 @@ function EventCoverflow({
               goTo(i)
             }}
           >
-            <EventFace index={i} lang={lang} note={note} {...copy[ev.id]} />
+            <EventFace id={ev.id} index={i} lang={lang} note={note} {...copy[ev.id]} />
           </CoverCard>
         ))}
       </motion.div>
@@ -350,6 +353,7 @@ function CoverCard({
 }
 
 function EventFace({
+  id,
   index,
   lang,
   title,
@@ -357,22 +361,23 @@ function EventFace({
   date,
   time,
   note,
-}: EventCopy & { index: number; lang: string; note: string }) {
+}: EventCopy & { id: (typeof events)[number]['id']; index: number; lang: string; note: string }) {
   const photo = `${import.meta.env.BASE_URL}${cardPhotos[index]}`
-  const position = index === 2 ? 'center 20%' : index === 1 ? 'center 32%' : 'center'
+  const position = id === 'wedding' ? 'center 20%' : id === 'reception' ? 'center 32%' : 'center'
+  const isReception = id === 'reception'
   return (
     <>
       <div className={`absolute inset-0 bg-gradient-to-br ${accents[index]}`} />
       <div
-        className={`absolute inset-0 ${index === 1 ? 'opacity-80' : 'opacity-30'}`}
+        className={`absolute inset-0 ${isReception ? 'opacity-80' : 'opacity-30'}`}
         style={{
           backgroundImage: `url(${photo})`,
           backgroundSize: 'cover',
           backgroundPosition: position,
-          mixBlendMode: index === 1 ? 'normal' : 'overlay',
+          mixBlendMode: isReception ? 'normal' : 'overlay',
         }}
       />
-      {index === 1 && (
+      {isReception && (
         <div className="absolute inset-0 bg-gradient-to-t from-[#0c2832]/92 via-[#0c2832]/45 to-[#0c2832]/15" />
       )}
       <div className="relative flex h-full flex-col justify-end p-7 select-none">
@@ -386,7 +391,7 @@ function EventFace({
         <div className="mt-6 space-y-1 border-t border-ivory/20 pt-4">
           <p className={`text-sm font-medium text-gold-bright ${lang === 'ta' ? 'font-tamil' : ''}`}>{date}</p>
           <p className={`text-sm text-ivory/85 ${lang === 'ta' ? 'font-tamil' : 'font-serif'}`}>{time}</p>
-          {index === 2 && <p className={`pt-1 text-[0.7rem] text-ivory/50 ${lang === 'ta' ? 'font-tamil' : ''}`}>{note}</p>}
+          {id === 'wedding' && <p className={`pt-1 text-[0.7rem] text-ivory/50 ${lang === 'ta' ? 'font-tamil' : ''}`}>{note}</p>}
         </div>
       </div>
     </>
